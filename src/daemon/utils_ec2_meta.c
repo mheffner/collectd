@@ -104,13 +104,13 @@ static struct ec2_meta *ec2_meta_get_fields()
 		return NULL;
 	}
 
-	ec2->instance_id = ec2_meta_get_field("instance_id");
+	ec2->instance_id = ec2_meta_get_field("instance-id");
 	if (ec2->instance_id == NULL) {
 		ERROR("ec2_meta: failed to get field instance_id");
 		goto failed;
 	}
 
-	ec2->instance_type = ec2_meta_get_field("instance_type");
+	ec2->instance_type = ec2_meta_get_field("instance-type");
 	if (ec2->instance_type == NULL) {
 		ERROR("ec2_meta: failed to get field instance_type");
 		goto failed;
