@@ -10,6 +10,7 @@
 
 #define CURL_TIMEOUT_MS	500	/*ms*/
 #define EC2_FIELD_SIZE	512
+#define MAX_HDR_LEN	256
 
 #define BASE_EC2_URL	"http://169.254.169.254/latest/meta-data/"
 
@@ -23,6 +24,8 @@ struct ec2_meta {
 	struct ec2_meta_field *instance_type;
 	struct ec2_meta_field *az;
 };
+
+static struct ec2_meta *_ec2_meta_saved;
 
 static size_t ec2_meta_callback(void *buf, size_t size,
     size_t nmemb, void *user_data)
@@ -178,6 +181,40 @@ static struct ec2_meta *ec2_meta_get_fields()
 	return NULL;
 }
 
+static void ec2_meta_add_header(struct curl_slist **headers,
+    const char *hdr_name, struct ec2_meta_field *field)
+{
+	char hdr[MAX_HDR_LEN];
+
+	if (field == NULL) {
+		return;
+	}
+
+	int len = snprintf(hdr, sizeof(hdr), "%s: %s", hdr_name, field->buf);
+	if (len >= sizeof(hdr)) {
+		/* Skip if somehow it got truncated. */
+		return;
+	}
+
+	/* curl_slist_append copies the header */
+	*headers = curl_slist_append (*headers, hdr);
+}
+
+void ec2_meta_add_headers(struct curl_slist **headers)
+{
+
+	if (_ec2_meta_saved == NULL) {
+		return;
+	}
+
+	ec2_meta_add_header(headers, "X-EC2-InstanceId",
+	    _ec2_meta_saved->instance_id);
+	ec2_meta_add_header(headers, "X-EC2-InstanceType",
+	    _ec2_meta_saved->instance_type);
+	ec2_meta_add_header(headers, "X-EC2-PlacementAZ",
+	    _ec2_meta_saved->az);
+}
+
 int ec2_meta_init()
 {
 	curl_global_init(CURL_GLOBAL_SSL);
@@ -194,6 +231,8 @@ int ec2_meta_init()
 		    ec2->instance_type->buf,
 		    ec2->az->buf);
 	}
+
+	_ec2_meta_saved = ec2;
 
 	return ec2 != NULL ? 0 : -1;
 }
