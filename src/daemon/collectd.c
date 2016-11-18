@@ -30,6 +30,7 @@
 #include "common.h"
 #include "plugin.h"
 #include "configfile.h"
+#include "utils_ec2_meta.h"
 
 #include <sys/types.h>
 #include <sys/un.h>
@@ -168,6 +169,10 @@ static int init_global_variables (void)
 
 	if (init_hostname () != 0)
 		return (-1);
+
+	if (ec2_meta_init() != 0) {
+		fprintf(stderr, "Cannot detect AWS EC2 environment.\n");
+	}
 	DEBUG ("hostname_g = %s;", hostname_g);
 
 	return (0);

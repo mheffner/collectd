@@ -67,13 +67,14 @@ collectd_SOURCES = collectd.c collectd.h \
 		   utils_tail.c utils_tail.h \
 		   utils_time.c utils_time.h \
 		   types_list.c types_list.h \
-		   utils_threshold.c utils_threshold.h
+		   utils_threshold.c utils_threshold.h \
+		   utils_ec2_meta.c
 
 
 collectd_CPPFLAGS =  $(AM_CPPFLAGS) $(LTDLINCL)
 collectd_CFLAGS = $(AM_CFLAGS)
 collectd_LDFLAGS = -export-dynamic
-collectd_LDADD = libavltree.la libcommon.la libheap.la -lm $(COMMON_LIBS)
+collectd_LDADD = libavltree.la libcommon.la libheap.la -lm $(COMMON_LIBS) $(BUILD_WITH_LIBCURL_LIBS)
 collectd_DEPENDENCIES = libavltree.la libcommon.la libheap.la libmetadata.la
 
 # The daemon needs to call sg_init, so we need to link it against libstatgrab,
