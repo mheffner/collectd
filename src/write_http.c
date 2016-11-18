@@ -71,7 +71,7 @@ struct wh_callback_s
         _Bool send_notifications;
 
         CURL *curl;
-	struct curl_slist *headers;
+        struct curl_slist *headers;
         char curl_errbuf[CURL_ERROR_SIZE];
 
         char  *send_buffer;
@@ -167,10 +167,10 @@ static int wh_callback_init (wh_callback_t *cb) /* {{{ */
                 cb->headers = curl_slist_append (cb->headers, "Content-Type: application/json");
         else
                 cb->headers = curl_slist_append (cb->headers, "Content-Type: text/plain");
-	cb->headers = curl_slist_append (cb->headers, "Expect:");
+        cb->headers = curl_slist_append (cb->headers, "Expect:");
 
-	/* Add any EC2 meta data. */
-	ec2_meta_add_headers(&cb->headers);
+        /* Add any EC2 meta data. */
+        ec2_meta_add_headers(&cb->headers);
 
         curl_easy_setopt (cb->curl, CURLOPT_HTTPHEADER, cb->headers);
 
