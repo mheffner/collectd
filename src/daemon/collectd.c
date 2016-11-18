@@ -171,7 +171,7 @@ static int init_global_variables (void)
 		return (-1);
 
 	if (ec2_meta_init() != 0) {
-		fprintf(stderr, "Cannot detect AWS EC2 environment.\n");
+		INFO ("Cannot detect AWS EC2 environment.");
 	}
 	DEBUG ("hostname_g = %s;", hostname_g);
 

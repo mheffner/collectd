@@ -222,14 +222,10 @@ int ec2_meta_init()
 	struct ec2_meta *ec2 = ec2_meta_get_fields();
 
 	if (ec2 != NULL) {
-		fprintf(stderr,
-		    "DETECTED AWS EC2:\n"
-		    "\tinstance-id: %s\n"
-		    "\tinstance-type: %s\n"
-		    "\taz: %s\n",
-		    ec2->instance_id->buf,
-		    ec2->instance_type->buf,
-		    ec2->az->buf);
+		INFO("Detected AWS EC2 environment: %s, %s, %s",
+		    ec2->az != NULL ? ec2->az->buf : "",
+		    ec2->instance_id != NULL ? ec2->instance_id->buf : "",
+		    ec2->instance_type != NULL ? ec2->instance_type->buf : "");
 	}
 
 	_ec2_meta_saved = ec2;
